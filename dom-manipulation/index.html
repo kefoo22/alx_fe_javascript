@@ -2,11 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dynamic Quote Generator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Dynamic Quote Generator</h1>
-  <div id="app"></div>
+  <div id="app">
+    <h1>Dynamic Quote Generator</h1>
+    <button id="randomQuoteBtn">Show Random Quote</button>
+    <div id="quoteDisplay"></div>
+
+    <button id="addQuoteBtn">Add New Quote</button>
+
+    <h2>Import / Export Quotes</h2>
+    <input type="file" id="importFile" accept=".json">
+    <button id="exportBtn">Export Quotes</button>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
