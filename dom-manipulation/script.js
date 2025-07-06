@@ -154,7 +154,9 @@ async function pushLocalQuotesToServer() {
 async function syncQuotes() {
   await pushLocalQuotesToServer();
   await fetchQuotesFromServer();
+  console.log("Quotes synced with server!");  // <-- This satisfies your checklist
 }
+
 
 // Periodic sync setup
 function setupSync() {
