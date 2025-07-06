@@ -36,7 +36,7 @@ function createAddQuoteForm() {
   `;
   appContainer.appendChild(formContainer);
 
-  // Attach event listener
+  // Attach event listener for adding a new quote
   document.getElementById("add-quote-btn").addEventListener("click", () => {
     const text = document.getElementById("new-quote-text").value.trim();
     const author = document.getElementById("new-quote-author").value.trim();
@@ -47,12 +47,26 @@ function createAddQuoteForm() {
       return;
     }
 
-    quotes.push({ text, author, category });
+    // ✅ Create newQuote object
+    const newQuote = {
+      text: text,
+      author: author,
+      category: category
+    };
+
+    // ✅ Push it to the array
+    quotes.push(newQuote);
     alert("Quote added!");
 
-    // Optionally, re-populate categories in dropdown or UI
+    // Optionally reset form fields
+    document.getElementById("new-quote-text").value = "";
+    document.getElementById("new-quote-author").value = "";
+    document.getElementById("new-quote-category").value = "";
+
+    // Optionally re-render category dropdown if new category was added
   });
 }
+
 
 // ===== Create Category Dropdown & Display Button =====
 function createCategorySelector() {
