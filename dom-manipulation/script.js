@@ -65,7 +65,7 @@ function addQuote() {
     };
     quotes.push(newQuote);
     saveQuotes();
-    syncLocalChanges();
+    syncQuotes();
 
     document.getElementById('quoteText').value = '';
     document.getElementById('quoteAuthor').value = '';
@@ -79,7 +79,7 @@ function addQuote() {
 function removeQuote(id) {
   quotes = quotes.filter(q => q.id !== id);
   saveQuotes();
-  syncLocalChanges();
+  syncQuotes();
 }
 
 // Export to JSON
@@ -103,7 +103,7 @@ function importFromJsonFile(event) {
       quotes.push(...importedQuotes);
       saveQuotes();
       alert('Quotes imported successfully!');
-      syncLocalChanges();
+      syncQuotes();
     } catch (err) {
       alert('Invalid JSON file.');
     }
@@ -111,7 +111,7 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// ✅ Fetch quotes from server (as required)
+// ✅ Fetch quotes from server
 async function fetchQuotesFromServer() {
   try {
     const response = await fetch(SERVER_URL);
@@ -132,12 +132,12 @@ async function fetchQuotesFromServer() {
     saveQuotes();
     showNotification("Synced with server");
   } catch (error) {
-    console.error("Error syncing with server:", error);
+    console.error("Error fetching server quotes:", error);
   }
 }
 
-// Push local changes to server (simulation)
-async function syncLocalChanges() {
+// ✅ Push local changes to server
+async function pushLocalQuotesToServer() {
   try {
     await fetch(SERVER_URL, {
       method: 'POST',
@@ -150,10 +150,16 @@ async function syncLocalChanges() {
   }
 }
 
-// Setup periodic sync
+// ✅ Combined syncing function as requested
+async function syncQuotes() {
+  await pushLocalQuotesToServer();
+  await fetchQuotesFromServer();
+}
+
+// Periodic sync setup
 function setupSync() {
-  fetchQuotesFromServer();
-  setInterval(fetchQuotesFromServer, 60000);
+  syncQuotes();
+  setInterval(syncQuotes, 60000);
 }
 
 // Show temporary notification
@@ -169,7 +175,7 @@ function showNotification(message) {
   setTimeout(() => banner.remove(), 5000);
 }
 
-// Initialize
+// Initialize app
 window.onload = () => {
   loadQuotes();
   displayQuotes();
