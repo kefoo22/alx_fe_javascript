@@ -1,6 +1,4 @@
-// Dynamic Quote Generator - Full Script
-
-const SERVER_URL = 'https://jsonplaceholder.typicode.com/posts'; // mock server endpoint
+const SERVER_URL = 'https://jsonplaceholder.typicode.com/posts';
 let quotes = [];
 
 // Load quotes from localStorage
@@ -18,7 +16,7 @@ function saveQuotes() {
   populateCategories();
 }
 
-// Display quotes to UI
+// Display quotes
 function displayQuotes() {
   const container = document.getElementById('quoteContainer');
   container.innerHTML = '';
@@ -28,7 +26,6 @@ function displayQuotes() {
     if (categoryFilter === 'all' || quote.category === categoryFilter) {
       const div = document.createElement('div');
       div.className = 'quote';
-
       div.innerHTML = `
         <p>"${quote.text}" - ${quote.author} [${quote.category}]</p>
         <button onclick="removeQuote(${quote.id})">Remove</button>
@@ -38,7 +35,7 @@ function displayQuotes() {
   });
 }
 
-// Populate category filter dropdown
+// Populate category dropdown
 function populateCategories() {
   const select = document.getElementById('categoryFilter');
   const categories = ['all', ...new Set(quotes.map(q => q.category))];
@@ -46,7 +43,7 @@ function populateCategories() {
   select.value = localStorage.getItem('selectedCategory') || 'all';
 }
 
-// Filter quotes based on category
+// Filter quotes by category
 function filterQuotes() {
   const selected = document.getElementById('categoryFilter').value;
   localStorage.setItem('selectedCategory', selected);
@@ -85,7 +82,7 @@ function removeQuote(id) {
   syncLocalChanges();
 }
 
-// Export quotes to JSON file
+// Export to JSON
 function exportToJsonFile() {
   const dataStr = JSON.stringify(quotes, null, 2);
   const blob = new Blob([dataStr], { type: 'application/json' });
@@ -97,7 +94,7 @@ function exportToJsonFile() {
   URL.revokeObjectURL(url);
 }
 
-// Import quotes from JSON file
+// Import from JSON file
 function importFromJsonFile(event) {
   const fileReader = new FileReader();
   fileReader.onload = function(e) {
@@ -114,13 +111,12 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// Fetch server quotes and merge (server takes precedence)
-async function fetchServerQuotes() {
+// ✅ Fetch quotes from server (as required)
+async function fetchQuotesFromServer() {
   try {
-    const res = await fetch(SERVER_URL);
-    const serverQuotes = await res.json();
+    const response = await fetch(SERVER_URL);
+    const serverQuotes = await response.json();
 
-    // simulate server data format
     const serverData = serverQuotes.slice(0, 5).map(q => ({
       id: q.id,
       text: q.title,
@@ -140,7 +136,7 @@ async function fetchServerQuotes() {
   }
 }
 
-// Push local quotes to server (simulation)
+// Push local changes to server (simulation)
 async function syncLocalChanges() {
   try {
     await fetch(SERVER_URL, {
@@ -154,10 +150,10 @@ async function syncLocalChanges() {
   }
 }
 
-// Periodic sync setup
+// Setup periodic sync
 function setupSync() {
-  fetchServerQuotes();
-  setInterval(fetchServerQuotes, 60000); // every 60 seconds
+  fetchQuotesFromServer();
+  setInterval(fetchQuotesFromServer, 60000);
 }
 
 // Show temporary notification
@@ -173,7 +169,7 @@ function showNotification(message) {
   setTimeout(() => banner.remove(), 5000);
 }
 
-// Initialize on load
+// Initialize
 window.onload = () => {
   loadQuotes();
   displayQuotes();
